@@ -26,4 +26,4 @@ def chooser():
             st.session_state.downloaded_file = download(st.session_state.yt_url, DownloadType.BOTH)
 
     if file_choose(st.session_state.downloaded_file):
-        navigation_buttons(back="transcribe", back_label="Transcribe")
+        navigation_buttons(forward="transcribe", forward_label="Transcribe")

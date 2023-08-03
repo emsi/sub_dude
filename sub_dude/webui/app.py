@@ -2,11 +2,13 @@ import requests_cache
 import streamlit as st
 
 from sub_dude.webui.chooser import chooser
+from sub_dude.webui.tranlsate import translate
 from sub_dude.webui.transcribe import transcribe
 
 STATES = {
     'chooser': chooser,
     'transcribe': transcribe,
+    'translate': translate,
 }
 
 requests_cache.install_cache("sub_dude.sqlite", expire_after=3600)

@@ -36,19 +36,19 @@ def transcribe_audio(response_format):
 
 
 def transcribe():
+    """Transcription page"""
     transcribe_sidebar()
 
     st.title("Transcribe")
 
-    navigation_buttons(back="chooser", back_label="Choosing file")
+    navigation_buttons(position="top", back="chooser", back_label="Choosing file")
 
     st.markdown(f"##### Audio file: `{st.session_state.chooser_file}`")
 
-    response_format = st.selectbox(
+    st.session_state["transcription_format"] = response_format = st.selectbox(
         "Transcription format",
         ["json", "text", "srt", "verbose_json", "vtt"],
-        index=0,
-        key="transcription_format",
+        index=2,
     )
 
     if not transcription_path(f".{response_format}").exists():
@@ -63,7 +63,7 @@ def transcribe():
                 transcription = json.dumps(json.loads(transcription), indent=4)
 
             st.markdown(
-                f"""<div style="height: 300px; overflow-y: auto">
+                f"""<div style="height: 18.75em; overflow-y: auto; margin-bottom: 1.25em;">
                 
 ```{response_format}
 {transcription}
@@ -73,3 +73,13 @@ def transcribe():
 """,
                 unsafe_allow_html=True,
             )
+
+    navigation_buttons(
+        position="bottom",
+        back="chooser",
+        back_label="Choosing file",
+        forward="translate"
+        if transcription_path(f".{response_format}").exists()
+        else None,
+        forward_label="Translate",
+    )

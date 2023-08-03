@@ -9,7 +9,7 @@ def file_choose(filename: Optional[str] = None) -> str:
     # use glob to match the pattern '.mp4' and list the files
     files = {
         file.name: file.resolve().as_posix()
-        for file in st.session_state.downloads_path.glob("*.mp4")
+        for file in st.session_state.downloads_path.glob("audio_*.mp4")
     }
 
     # Create the multi-select box with the friendly names
