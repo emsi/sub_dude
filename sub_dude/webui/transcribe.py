@@ -56,3 +56,20 @@ def transcribe():
             with st.spinner("Transcribing..."):
                 transcription = transcribe_audio(response_format=response_format)
                 st.experimental_rerun()
+    else:
+        with open(transcription_path(f".{response_format}")) as f:
+            transcription = f.read()
+            if response_format == "json" or response_format == "verbose_json":
+                transcription = json.dumps(json.loads(transcription), indent=4)
+
+            st.markdown(
+                f"""<div style="height: 300px; overflow-y: auto">
+                
+```{response_format}
+{transcription}
+```
+
+</div>
+""",
+                unsafe_allow_html=True,
+            )

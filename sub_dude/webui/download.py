@@ -7,12 +7,14 @@ from pytube import YouTube
 
 
 class DownloadType(Enum):
+    """Type of download"""
     AUDIO = "audio"
     VIDEO = "video"
     BOTH = "both"
 
 
 def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
+    """Download a video from YouTube and return the file name"""
     if not isinstance(download_type, DownloadType):
         raise ValueError("download_type must be an instance of DownloadType Enum")
 
@@ -53,14 +55,14 @@ def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
         )
     status.empty()
 
-    if download_type == DownloadType.BOTH:
-        audio_vide_file_path = video_stream.get_file_path(output_path=st.session_state.downloads_path)
-        command = (
-            f"ffmpeg -i '{video_file_path}' -i '{audio_file_path}' -c:v copy -c:a aac '{audio_vide_file_path}'"
-        )
-        with st.spinner("Merging audio and video..."):
-            subprocess.run(command, shell=True)
-        return Path(audio_vide_file_path).name
+    # if download_type == DownloadType.BOTH:
+    #     audio_vide_file_path = video_stream.get_file_path(output_path=st.session_state.downloads_path)
+    #     command = (
+    #         f"ffmpeg -i '{video_file_path}' -i '{audio_file_path}' -c:v copy -c:a aac '{audio_vide_file_path}'"
+    #     )
+    #     with st.spinner("Merging audio and video..."):
+    #         subprocess.run(command, shell=True)
+    #     return Path(audio_vide_file_path).name
 
     if download_type == DownloadType.AUDIO:
         return Path(audio_file_path).name
