@@ -31,7 +31,9 @@ def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
 
     # Download video and audio streams separately
     video_stream = yt.streams.get_highest_resolution()
-    audio_stream = yt.streams.get_audio_only()
+    # audio_stream = yt.streams.get_audio_only()
+    # DOwnload the lower quality as it transcribes well but is smaller
+    audio_stream = yt.streams.filter(only_audio=True).first()
 
     if download_type == DownloadType.AUDIO or download_type == DownloadType.BOTH:
         status.markdown("Downloading audio...")
@@ -39,6 +41,7 @@ def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
         audio_file_path = audio_stream.download(
             output_path=st.session_state.downloads_path,
             filename_prefix="audio_",
+            skip_existing=False,
         )
     if download_type == DownloadType.VIDEO or download_type == DownloadType.BOTH:
         status.markdown("Downloading video...")
@@ -46,6 +49,7 @@ def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
         video_file_path = video_stream.download(
             output_path=st.session_state.downloads_path,
             filename_prefix="video_",
+            skip_existing=False,
         )
     status.empty()
 

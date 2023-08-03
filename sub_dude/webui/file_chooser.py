@@ -16,10 +16,10 @@ def file_choose(filename: Optional[str] = None) -> str:
     }
 
     # Create the multi-select box with the friendly names
-    chosen_name = st.selectbox(
+    st.session_state.chooser_file = st.selectbox(
         "Or choose a file",
         files.keys(),
         disabled=len(files) == 0,
         index=list(files.keys()).index(filename) if filename else 0,
     )
-    st.session_state.chooser_file = files[chosen_name]
+    return st.session_state.chooser_file
