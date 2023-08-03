@@ -12,6 +12,8 @@ def file_choose(filename: Optional[str] = None) -> str:
         for file in st.session_state.downloads_path.glob("audio_*.mp4")
     }
 
+    filename = filename or st.session_state.get("chooser_file")
+
     # Create the multi-select box with the friendly names
     st.session_state.chooser_file = st.selectbox(
         "Or choose a file",

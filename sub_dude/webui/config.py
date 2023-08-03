@@ -33,15 +33,15 @@ def chooser_sidebar():
     st.session_state.transcriptions_path = _transcriptions_path().resolve()
 
 
-def model_choose():
+def model_choose(*, model_prefix, default_model, session_name):
     """Select a model"""
     openai_models = openai.Model.list().data
-    whisper_models = [model["id"] for model in openai_models if model["id"].startswith("whisper-")]
+    whisper_models = [model["id"] for model in openai_models if model["id"].startswith(model_prefix)]
 
-    st.session_state["whisper_model"] = st.sidebar.selectbox(
+    st.session_state[session_name] = st.sidebar.selectbox(
         "Model",
         whisper_models,
-        index=whisper_models.index(st.session_state.get("whisper_model", "whisper-1")),
+        index=whisper_models.index(st.session_state.get(session_name, default_model)),
     )
 
 
@@ -54,5 +54,18 @@ def transcribe_sidebar():
         getattr(openai, "api_key") or read_secret("openai_api_key.txt"),
         type="password",
     )
-    model_choose()
+    model_choose(model_prefix="whisper-", default_model="whisper-1", session_name="whisper_model")
+    openai.organization = st.sidebar.text_input("OpenAI organization", openai.organization or "")
+
+
+def manipulate_sidebar():
+    """Transcribe configuration sidebar"""
+    st.sidebar.title("🤖Options")
+
+    openai.api_key = st.sidebar.text_input(
+        "OpenAI API key",
+        getattr(openai, "api_key") or read_secret("openai_api_key.txt"),
+        type="password",
+    )
+    model_choose(model_prefix="gpt-", default_model="gpt-3.5-turbo", session_name="gpt_model")
     openai.organization = st.sidebar.text_input("OpenAI organization", openai.organization or "")

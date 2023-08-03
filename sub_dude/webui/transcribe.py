@@ -45,10 +45,11 @@ def transcribe():
 
     st.markdown(f"##### Audio file: `{st.session_state.chooser_file}`")
 
+    transcription_formats = ["json", "text", "srt", "verbose_json", "vtt"]
     st.session_state["transcription_format"] = response_format = st.selectbox(
         "Transcription format",
-        ["json", "text", "srt", "verbose_json", "vtt"],
-        index=2,
+        transcription_formats,
+        index=transcription_formats.index(st.session_state.get("transcription_format", "srt")),
     )
 
     if not transcription_path(f".{response_format}").exists():
@@ -61,25 +62,28 @@ def transcribe():
             transcription = f.read()
             if response_format == "json" or response_format == "verbose_json":
                 transcription = json.dumps(json.loads(transcription), indent=4)
+            st.session_state.transcription = transcription
 
-            st.markdown(
-                f"""<div style="height: 18.75em; overflow-y: auto; margin-bottom: 1.25em;">
-                
-```{response_format}
-{transcription}
-```
-
-</div>
-""",
-                unsafe_allow_html=True,
-            )
+            display_transcription()
 
     navigation_buttons(
         position="bottom",
         back="chooser",
         back_label="Choosing file",
-        forward="manipulate"
-        if transcription_path(f".{response_format}").exists()
-        else None,
+        forward="manipulate" if transcription_path(f".{response_format}").exists() else None,
         forward_label="Use transcription",
+    )
+
+
+def display_transcription():
+    """Display transcription in the overflow box"""
+    st.markdown(
+        f"""<div style="height: 23em; overflow-y: auto; margin-bottom: 1.25em;">
+
+```{st.session_state.transcription_format}
+{st.session_state.transcription}
+```
+</div>
+""",
+        unsafe_allow_html=True,
     )
