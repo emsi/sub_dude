@@ -78,8 +78,8 @@ def transcribe():
         position="bottom",
         back="chooser",
         back_label="Choosing file",
-        forward="translate"
+        forward="manipulate"
         if transcription_path(f".{response_format}").exists()
         else None,
-        forward_label="Translate",
+        forward_label="Use transcription",
     )
