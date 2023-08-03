@@ -19,7 +19,7 @@ def transcribe_audio(response_format):
     """Transcribe audio"""
     with open(st.session_state.downloads_path / st.session_state.chooser_file, "rb") as audio_file:
         transcription = openai.Audio.transcribe(
-            "whisper-1",
+            st.session_state["whisper_model"],
             audio_file,
             # this helps to recognize those words in the audio
             prompt="DALL·E, GPT-3, ChatGPT, GPT-4, OpenAI, Midjourney",

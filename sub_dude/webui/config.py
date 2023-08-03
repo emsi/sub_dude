@@ -38,10 +38,10 @@ def model_choose():
     openai_models = openai.Model.list().data
     whisper_models = [model["id"] for model in openai_models if model["id"].startswith("whisper-")]
 
-    st.session_state["model"] = st.sidebar.selectbox(
+    st.session_state["whisper_model"] = st.sidebar.selectbox(
         "Model",
         whisper_models,
-        index=whisper_models.index(st.session_state.get("model", "whisper-1")),
+        index=whisper_models.index(st.session_state.get("whisper_model", "whisper-1")),
     )
 
 
