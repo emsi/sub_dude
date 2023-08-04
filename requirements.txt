@@ -1,0 +1,10 @@
+git+https://github.com/openai/whisper.git
+git+https://github.com/pytube/pytube.git
+# pandas
+
+pandas~=2.0.3
+moviepy~=1.0.3
+typer~=0.9.0
+streamlit~=1.25.0
+requests_cache
+openai~=0.27.8
