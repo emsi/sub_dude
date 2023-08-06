@@ -45,7 +45,13 @@ def transcribe():
 
     st.markdown(f"##### Audio file: `{st.session_state.chooser_file}`")
 
-    transcription_formats = ["json", "text", "srt", "verbose_json", "vtt"]
+    transcription_formats = [
+        # "json",
+        "text",
+        "srt",
+        "verbose_json",
+        # "vtt",
+    ]
     st.session_state["transcription_format"] = response_format = st.selectbox(
         "Transcription format",
         transcription_formats,
@@ -70,7 +76,10 @@ def transcribe():
         position="bottom",
         back="chooser",
         back_label="Choosing file",
-        forward="manipulate" if transcription_path(f".{response_format}").exists() else None,
+        forward="manipulate"
+        if transcription_path(f".{response_format}").exists()
+        and st.session_state.transcription_format != "verbose_json"
+        else None,
         forward_label="Use transcription",
     )
 
