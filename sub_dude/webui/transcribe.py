@@ -4,6 +4,7 @@ from pathlib import Path
 import openai
 import streamlit as st
 
+from sub_dude.text_parse import word_wrap
 from sub_dude.webui.config import transcribe_sidebar
 from sub_dude.webui.navigation import navigation_buttons
 
@@ -22,7 +23,7 @@ def transcribe_audio(response_format):
             st.session_state["whisper_model"],
             audio_file,
             # this helps to recognize those words in the audio
-            prompt="DALL·E, GPT-3, ChatGPT, GPT-4, OpenAI, Midjourney",
+            prompt=st.session_state.prompt,
             response_format=response_format,
         )
 
@@ -49,7 +50,7 @@ def transcribe():
         # "json",
         "text",
         "srt",
-        "verbose_json",
+        # "verbose_json",
         # "vtt",
     ]
     st.session_state["transcription_format"] = response_format = st.selectbox(
@@ -86,11 +87,16 @@ def transcribe():
 
 def display_transcription():
     """Display transcription in the overflow box"""
+    if st.session_state.transcription_format == "text":
+        transcription = word_wrap(st.session_state.transcription, 100)
+    else:
+        transcription = st.session_state.transcription
+
     st.markdown(
         f"""<div style="height: 23em; overflow-y: auto; margin-bottom: 1.25em;">
 
 ```{st.session_state.transcription_format}
-{st.session_state.transcription}
+{transcription}
 ```
 </div>
 """,

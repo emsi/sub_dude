@@ -13,3 +13,11 @@ def manipulate():
     navigation_buttons(back="transcribe", back_label="Transcribe")
 
     display_transcription()
+
+    if st.session_state.transcription_format == "srt" and st.button("Translate"):
+        if not st.session_state.target_language:
+            st.error("Please enter a target language in options")
+            return
+
+    if st.session_state.transcription_format == "text" and st.button("Summarize"):
+        ...
