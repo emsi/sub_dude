@@ -4,6 +4,7 @@ from sub_dude.srt_parse import srt_dump
 from sub_dude.translate import translate_srt
 from sub_dude.webui.config import manipulate_sidebar
 from sub_dude.webui.navigation import navigation_buttons
+from sub_dude.webui.render import render
 from sub_dude.webui.transcribe import transcription_path
 
 
@@ -70,7 +71,8 @@ def manipulate():
                 translated.text_area(
                     f"{st.session_state.target_language} translation", translation, height=500
                 )
-            translated.button("Render")
+            if translated.button("Render"):
+                render(translated)
 
 
     if st.session_state.transcription_format == "text" and st.button("Summarize"):
