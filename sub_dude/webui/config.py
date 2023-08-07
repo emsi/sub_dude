@@ -77,7 +77,7 @@ def manipulate_sidebar():
     model_choose(model_prefix="gpt-", default_model="gpt-3.5-turbo", session_name="gpt_model")
     openai.organization = st.sidebar.text_input("OpenAI organization", openai.organization or "")
     st.session_state["manipulate_temperature"] = st.sidebar.slider(
-        "Temperature", 0.0, 2.0, st.session_state.get("summary_temperature", 0.1)
+        "Temperature", 0.0, 2.0, st.session_state.get("summary_temperature", 0.0)
     )
 
     if st.session_state.transcription_format == "srt":

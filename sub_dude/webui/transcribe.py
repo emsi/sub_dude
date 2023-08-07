@@ -9,11 +9,14 @@ from sub_dude.webui.config import transcribe_sidebar
 from sub_dude.webui.navigation import navigation_buttons
 
 
-def transcription_path(ext) -> Path:
+def transcription_path(ext, *, translation_language="") -> Path:
     """Return the path to the json folder"""
+    if not ext.startswith("."):
+        ext = f".{ext}"
+    translation_language = translation_language and f"_{translation_language}"
     return (
         Path(st.session_state.transcriptions_path) / st.session_state.chooser_file
-    ).with_suffix(ext)
+    ).with_suffix(ext + translation_language)
 
 
 def transcribe_audio(response_format):
@@ -27,7 +30,7 @@ def transcribe_audio(response_format):
             response_format=response_format,
         )
 
-    with open(transcription_path(f".{response_format}"), "w") as f:
+    with open(transcription_path(response_format), "w") as f:
         if response_format == "json" or response_format == "verbose_json":
             f.write(json.dumps(transcription))
         else:
@@ -59,13 +62,13 @@ def transcribe():
         index=transcription_formats.index(st.session_state.get("transcription_format", "srt")),
     )
 
-    if not transcription_path(f".{response_format}").exists():
+    if not transcription_path(response_format).exists():
         if st.button("Transcribe"):
             with st.spinner("Transcribing..."):
                 transcription = transcribe_audio(response_format=response_format)
                 st.experimental_rerun()
     else:
-        with open(transcription_path(f".{response_format}")) as f:
+        with open(transcription_path(response_format)) as f:
             transcription = f.read()
             if response_format == "json" or response_format == "verbose_json":
                 transcription = json.dumps(json.loads(transcription), indent=4)
@@ -78,7 +81,7 @@ def transcribe():
         back="chooser",
         back_label="Choosing file",
         forward="manipulate"
-        if transcription_path(f".{response_format}").exists()
+        if transcription_path(response_format).exists()
         and st.session_state.transcription_format != "verbose_json"
         else None,
         forward_label="Use transcription",
