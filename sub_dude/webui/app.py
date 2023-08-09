@@ -1,4 +1,3 @@
-import requests_cache
 import streamlit as st
 
 from sub_dude.webui.chooser import chooser
