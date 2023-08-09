@@ -2,7 +2,7 @@ import re
 from itertools import chain
 from typing import List, Dict
 
-import joblib as joblib
+import joblib
 import openai
 
 from sub_dude.srt_parse import srt_parse, concatenate_srt_list, replace_translation
