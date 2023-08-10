@@ -28,6 +28,7 @@ def transcribe_audio(response_format):
             # this helps to recognize those words in the audio
             prompt=st.session_state.prompt,
             response_format=response_format,
+            language=st.session_state.language,
         )
 
     with open(transcription_path(response_format), "w") as f:
