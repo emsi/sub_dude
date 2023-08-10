@@ -125,7 +125,7 @@ def transcribe_sidebar():
         st.session_state.get("prompt", "DALL·E, GPT-3, ChatGPT, GPT-4, OpenAI, Midjourney"),
     )
     language = st.sidebar.selectbox(
-        "Language", list(whisper_languages.keys()), index=0
+        "Audio language", list(whisper_languages.keys()), index=0
     )
     st.session_state["language"] = whisper_languages[language]
 
