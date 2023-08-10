@@ -10,3 +10,4 @@ python3 -m venv venv
 pip install -r requirements.txt
 PYTHONPATH=. streamlit run sub_dude/webui/app.py --browser.gatherUsageStats false
 ```
+3. To render final video with subtitles you need to instal `ffmpeg` package
