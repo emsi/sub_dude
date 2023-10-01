@@ -8,12 +8,12 @@ from sub_dude.text_parse import word_wrap
 def parse_block(block):
     """Parse a single subtitle block"""
     # if block consists of just newline we're at the end of the file
-    if block == "\n":
+    if block == "\n" or block == "":
         return None
     try:
         index, timecodes, *text = block.split("\n")
         # convert list of text lines back to a single string with newlines
-        text = "\n".join(text)
+        text = " ".join(text)
 
         # parse start and end times
         start_time, end_time = timecodes.split(" --> ")

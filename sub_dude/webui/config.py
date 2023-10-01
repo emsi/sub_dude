@@ -68,30 +68,20 @@ whisper_languages = languages = {
 }
 
 
-def _downloads_path() -> Path:
+def downloads_path() -> Path:
     """Return the path to the downloads folder"""
-    return Path(st.session_state.data_folder) / "downloads"
+    return Path(st.session_state.data_folder) / st.session_state.project_name
 
 
-def _transcriptions_path() -> Path:
-    """Return the path to the transcriptions folder"""
-    return Path(st.session_state.data_folder) / "transcriptions"
-
-
-def chooser_sidebar():
+def project_sidebar():
     """Configuration sidebar"""
     st.sidebar.title("🤖Sub Dude Config")
 
-    if st.sidebar.text_input(
+    st.sidebar.text_input(
         "Data folder",
         st.session_state.get("data_folder", "./data"),
         key="data_folder",
-    ):
-        os.makedirs(_downloads_path(), exist_ok=True)
-        os.makedirs(_transcriptions_path(), exist_ok=True)
-
-    st.session_state.downloads_path = _downloads_path().resolve()
-    st.session_state.transcriptions_path = _transcriptions_path().resolve()
+    )
 
 
 def model_choose(*, model_prefix, default_model, session_name):
@@ -124,9 +114,7 @@ def transcribe_sidebar():
         "Prompt",
         st.session_state.get("prompt", "DALL·E, GPT-3, ChatGPT, GPT-4, OpenAI, Midjourney"),
     )
-    language = st.sidebar.selectbox(
-        "Audio language", list(whisper_languages.keys()), index=0
-    )
+    language = st.sidebar.selectbox("Audio language", list(whisper_languages.keys()), index=0)
     st.session_state["language"] = whisper_languages[language]
 
 
@@ -154,10 +142,8 @@ def manipulate_sidebar():
         st.session_state["extra_prompt_instruction"] = st.sidebar.text_area(
             "Extra translation prompt",
             st.session_state.get("extra_prompt_instruction", ""),
-            placeholder=(
-                "Eg. Please use formal language. Don't translate names. Translate Mr. "
-                "EMSI as EMSI.",
-            ),
+            placeholder="Eg. Please use formal language. Don't translate names. Translate Mr. "
+            "Emsi as EMSI, etc.",
         )
     elif st.session_state.transcription_format == "text":
         st.session_state["summarization_prompt"] = st.sidebar.text_area(

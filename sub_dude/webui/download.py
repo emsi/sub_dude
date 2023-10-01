@@ -1,9 +1,11 @@
-import subprocess
 from enum import Enum
 from pathlib import Path
 
+import pysrt as pysrt
 import streamlit as st
 from pytube import YouTube
+from pytube.extract import video_id
+from youtube_transcript_api import YouTubeTranscriptApi
 
 
 class DownloadType(Enum):
@@ -34,7 +36,7 @@ def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
     # Download video and audio streams separately
     video_stream = yt.streams.get_highest_resolution()
     # audio_stream = yt.streams.get_audio_only()
-    # DOwnload the lower quality as it transcribes well but is smaller
+    # Download the lower quality as it transcribes well but is smaller
     audio_stream = yt.streams.filter(only_audio=True).first()
 
     if download_type == DownloadType.AUDIO or download_type == DownloadType.BOTH:
@@ -55,16 +57,36 @@ def download(yt_url: str, download_type: DownloadType = DownloadType.AUDIO):
         )
     status.empty()
 
-    # if download_type == DownloadType.BOTH:
-    #     audio_vide_file_path = video_stream.get_file_path(output_path=st.session_state.downloads_path)
-    #     command = (
-    #         f"ffmpeg -i '{video_file_path}' -i '{audio_file_path}' -c:v copy -c:a aac '{audio_vide_file_path}'"
-    #     )
-    #     with st.spinner("Merging audio and video..."):
-    #         subprocess.run(command, shell=True)
-    #     return Path(audio_vide_file_path).name
-
     if download_type == DownloadType.AUDIO:
         return Path(audio_file_path).name
     elif download_type == DownloadType.VIDEO:
         return Path(video_file_path).name
+
+
+def download_transcripts(yt_url: str):
+    """Download transcripts for a video"""
+    vid_id = video_id(yt_url)
+    manual_translations = YouTubeTranscriptApi.list_transcripts(
+        vid_id
+    )._manually_created_transcripts
+
+    if language := st.selectbox(
+        "Choose transcript to download",
+        manual_translations.keys(),
+        disabled=len(manual_translations) == 0,
+    ):
+        transcript = YouTubeTranscriptApi.get_transcript(vid_id, languages=[language])
+        subs = pysrt.SubRipFile()
+        for entry in transcript:
+            item = pysrt.SubRipItem(
+                index=len(subs),
+                start=pysrt.SubRipTime(seconds=entry["start"]),
+                end=pysrt.SubRipTime(seconds=entry["start"] + entry["duration"]),
+                text=entry["text"],
+            )
+            subs.append(item)
+
+        st.session_state.transcription_path = (
+            st.session_state.downloads_path / f"{language}_{st.session_state.project_name}"
+        ).with_suffix(".srt")
+        subs.save(st.session_state.transcription_path, encoding="utf-8")

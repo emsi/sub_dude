@@ -14,9 +14,9 @@ def transcription_path(ext, *, translation_language="") -> Path:
     if not ext.startswith("."):
         ext = f".{ext}"
     translation_language = translation_language and f"_{translation_language}"
-    return (
-        Path(st.session_state.transcriptions_path) / st.session_state.chooser_file
-    ).with_suffix(ext + translation_language)
+    return (Path(st.session_state.downloads_path) / st.session_state.chooser_file).with_suffix(
+        ext + translation_language
+    )
 
 
 def transcribe_audio(response_format):
@@ -46,7 +46,7 @@ def transcribe():
 
     st.title("Transcribe")
 
-    navigation_buttons(position="top", back="chooser", back_label="Choosing file")
+    navigation_buttons(position="top", back="chooser", back_label="Choosing audio file")
 
     st.markdown(f"##### Audio file: `{st.session_state.chooser_file}`")
 
@@ -80,7 +80,7 @@ def transcribe():
     navigation_buttons(
         position="bottom",
         back="chooser",
-        back_label="Choosing file",
+        back_label="Choosing audio file",
         forward="manipulate"
         if transcription_path(response_format).exists()
         and st.session_state.transcription_format != "verbose_json"
