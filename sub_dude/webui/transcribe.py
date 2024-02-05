@@ -92,7 +92,7 @@ def transcribe():
 def display_transcription():
     """Display transcription in the overflow box"""
     if st.session_state.transcription_format == "text":
-        transcription = word_wrap(st.session_state.transcription, 90)
+        transcription = word_wrap(st.session_state.transcription, 88)
     else:
         transcription = st.session_state.transcription
 
