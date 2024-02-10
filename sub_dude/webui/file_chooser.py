@@ -30,7 +30,7 @@ def transcript_choose(filename: Optional[str] = None) -> str:
     # use glob to match the pattern '.mp4' and list the files
     files = {
         file.name: file.resolve().as_posix()
-        for file in st.session_state.downloads_path.glob("*.srt")
+        for file in st.session_state.downloads_path.glob("audio_*.srt")
     }
 
     filename = filename or st.session_state.get("transcription_file")

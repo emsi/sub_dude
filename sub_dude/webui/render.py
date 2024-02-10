@@ -3,7 +3,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from sub_dude.webui.transcribe import transcription_path
+from sub_dude.transcribe import transcription_path
 
 
 def audio_video_paths() -> tuple[Path, Path, Path]:

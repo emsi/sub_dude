@@ -5,7 +5,7 @@ from sub_dude.translate import translate_srt
 from sub_dude.webui.config import manipulate_sidebar
 from sub_dude.webui.navigation import navigation_buttons
 from sub_dude.webui.render import render
-from sub_dude.webui.transcribe import transcription_path
+from sub_dude.transcribe import transcription_path
 
 
 def manipulate():

@@ -7,6 +7,8 @@ from pytube import YouTube
 from pytube.extract import video_id
 from youtube_transcript_api import YouTubeTranscriptApi
 
+import sub_dude.transcribe
+
 
 class DownloadType(Enum):
     """Type of download"""
@@ -86,7 +88,7 @@ def download_transcripts(yt_url: str):
             )
             subs.append(item)
 
-        st.session_state.transcription_path = (
+        sub_dude.transcribe.transcription_path = (
             st.session_state.downloads_path / f"{language}_{st.session_state.project_name}"
         ).with_suffix(".srt")
-        subs.save(st.session_state.transcription_path, encoding="utf-8")
+        subs.save(sub_dude.transcribe.transcription_path, encoding="utf-8")

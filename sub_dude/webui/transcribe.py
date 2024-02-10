@@ -1,43 +1,11 @@
 import json
-from pathlib import Path
 
-import openai
 import streamlit as st
 
 from sub_dude.text_parse import word_wrap
+from sub_dude.transcribe import transcribe_audio, transcription_path
 from sub_dude.webui.config import transcribe_sidebar
 from sub_dude.webui.navigation import navigation_buttons
-
-
-def transcription_path(ext, *, translation_language="") -> Path:
-    """Return the path to the json folder"""
-    if not ext.startswith("."):
-        ext = f".{ext}"
-    translation_language = translation_language and f"_{translation_language}"
-    return (Path(st.session_state.downloads_path) / st.session_state.chooser_file).with_suffix(
-        ext + translation_language
-    )
-
-
-def transcribe_audio(response_format):
-    """Transcribe audio"""
-    with open(st.session_state.downloads_path / st.session_state.chooser_file, "rb") as audio_file:
-        transcription = openai.Audio.transcribe(
-            st.session_state["whisper_model"],
-            audio_file,
-            # this helps to recognize those words in the audio
-            prompt=st.session_state.prompt,
-            response_format=response_format,
-            language=st.session_state.language,
-        )
-
-    with open(transcription_path(response_format), "w") as f:
-        if response_format == "json" or response_format == "verbose_json":
-            f.write(json.dumps(transcription))
-        else:
-            f.write(transcription)
-
-    return transcription
 
 
 def transcribe():
@@ -57,21 +25,18 @@ def transcribe():
         # "verbose_json",
         # "vtt",
     ]
-    st.session_state["transcription_format"] = response_format = st.selectbox(
+    st.session_state["transcription_format"] = transcription_format = st.selectbox(
         "Transcription format",
         transcription_formats,
         index=transcription_formats.index(st.session_state.get("transcription_format", "srt")),
     )
 
-    if not transcription_path(response_format).exists():
-        if st.button("Transcribe"):
-            with st.spinner("Transcribing..."):
-                transcription = transcribe_audio(response_format=response_format)
-                st.experimental_rerun()
+    if not transcription_path(transcription_format).exists():
+        transcribe_audio()
     else:
-        with open(transcription_path(response_format)) as f:
+        with open(transcription_path(transcription_format)) as f:
             transcription = f.read()
-            if response_format == "json" or response_format == "verbose_json":
+            if transcription_format == "json" or transcription_format == "verbose_json":
                 transcription = json.dumps(json.loads(transcription), indent=4)
             st.session_state.transcription = transcription
 
@@ -82,8 +47,8 @@ def transcribe():
         back="chooser",
         back_label="Choosing audio file",
         forward="manipulate"
-        if transcription_path(response_format).exists()
-        and st.session_state.transcription_format != "verbose_json"
+        if transcription_path(transcription_format).exists()
+           and st.session_state.transcription_format != "verbose_json"
         else None,
         forward_label="Use transcription",
     )

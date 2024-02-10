@@ -2,6 +2,8 @@ import re
 from copy import deepcopy
 from typing import Dict, List
 
+import pysrt
+
 from sub_dude.text_parse import word_wrap
 
 
@@ -64,3 +66,10 @@ def replace_translation(srt_list: List[Dict[str, str]], new_texts: List[str]):
         srt_list[number]["text"] = word_wrap(text)
 
     return srt_list
+
+
+def shift_subtitles(srt_txt: str, shift: float) -> str:
+    """Shift all subtitles by a given amount of seconds"""
+    subs = pysrt.from_string(srt_txt)
+    subs.shift(seconds=shift)
+    return subs
